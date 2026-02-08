@@ -107,33 +107,3 @@ uninstall:
 	rmdir '$(DESTDIR)$(INCLUDEDIR)'/tree_sitter
 
 .PHONY: all shared static install uninstall clean
-
-
-##### Dev targets #####
-
-test:
-	cargo xtask fetch-fixtures
-	cargo xtask generate-fixtures
-	cargo xtask test
-
-test-wasm:
-	cargo xtask generate-fixtures --wasm
-	cargo xtask test-wasm
-
-lint:
-	cargo update --workspace --locked --quiet
-	cargo check --workspace --all-targets
-	cargo fmt --all --check
-	cargo clippy --workspace --all-targets -- -D warnings
-
-lint-web:
-	npm --prefix lib/binding_web ci
-	npm --prefix lib/binding_web run lint
-
-format:
-	cargo fmt --all
-
-changelog:
-	@git-cliff --config .github/cliff.toml --prepend CHANGELOG.md --latest --github-token $(shell gh auth token)
-
-.PHONY: test test-wasm lint format changelog
